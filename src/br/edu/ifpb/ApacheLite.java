@@ -1,17 +1,66 @@
 package br.edu.ifpb;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.GregorianCalendar;
 import java.util.Locale;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
-public class ApacheLite {
+public class ApacheLite extends Thread{
+	
+	private static ServerSocket serverSocket = null;
+	private static int port = 5600;
+	private int number = 0;
+	
+	public ApacheLite(ServerSocket ss,int n){
+		serverSocket = ss;
+		this.number = n;
+	}
+	
 	public static void main(String[] args) {
-		ApacheLite al = new ApacheLite();
-		al.find("doc.xt");
-		al.find("index.html");
-		al.find("doc.txt");
+		System.out.println("ApacheLite - Executing");
+		ServerSocket ss = null;
+		
+		try {
+			
+			ss = new ServerSocket(port);
+			ExecutorService pool = Executors.newFixedThreadPool(10);
+			
+			for (int i = 0; i < 10; i++) {
+				pool.execute(new ApacheLite(ss,i));
+			}
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+	
+	@Override
+	public void run() {
+		// TODO Auto-generated method stub
+		System.out.println("Thread Starting number - "+this.number);
+		try {
+			while(true){
+				Socket socket = serverSocket.accept();
+				DataInputStream dataInput = new DataInputStream(socket.getInputStream());
+				DataOutputStream dataOutput = new DataOutputStream(socket.getOutputStream());
+				
+				String data = dataInput.readUTF();
+				dataOutput.writeUTF(this.finder(data));
+				socket.close();
+				System.out.println("Request intercepted by number thread - "+this.number);
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
 	}
 	
 	private String toHttpFormat(String content,String contenttype,
@@ -28,7 +77,7 @@ public class ApacheLite {
 		return formatedMessage;
 	}
 	
-	public String find(String name){
+	private String finder(String name){
 		
 		String response = "";
 	
@@ -38,7 +87,7 @@ public class ApacheLite {
 		} catch (IOException e) {
 			response = this.toHttpFormat("","text/plain",404,"Not Found");
 		}
-		System.out.println(response);
+		//System.out.println(response);
 		return response;
 	} 
 }
