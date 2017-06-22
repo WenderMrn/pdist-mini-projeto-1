@@ -16,8 +16,8 @@ public class ApacheLite extends Thread{
 	
 	private static ServerSocket serverSocket = null;
 	private static int port = 5600;
-	private int number = 0;
-	private static int poolSize = 100;   
+	private static int poolSize = 100; 
+	private int number = 0;  
 	
 	public ApacheLite(ServerSocket ss,int n){
 		serverSocket = ss;
@@ -25,7 +25,7 @@ public class ApacheLite extends Thread{
 	}
 	
 	public static void main(String[] args) {
-		System.out.println("ApacheLite - Executing");
+		System.out.println("ApacheLite - Executing\n\n");
 		ServerSocket ss = null;
 		
 		try {
@@ -61,6 +61,7 @@ public class ApacheLite extends Thread{
 			}
 		} catch (Exception e) {
 			// TODO: handle exception
+			e.printStackTrace();
 		}
 	}
 	
@@ -88,7 +89,7 @@ public class ApacheLite extends Thread{
 		} catch (IOException e) {
 			response = this.toHttpFormat("","text/plain",404,"Not Found");
 		}
-		//System.out.println(response);
+		
 		return response;
 	} 
 }

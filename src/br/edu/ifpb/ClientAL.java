@@ -47,6 +47,7 @@ public class ClientAL {
 
 			// Escreve resposta
 			System.out.println(input.readUTF());
+			socket.close();
 		} catch (IOException e) {
 			System.out.println("Não foi possível realizar operação ao servidor especificado");
 		}
