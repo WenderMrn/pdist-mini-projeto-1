@@ -13,23 +13,22 @@ public class ClientAL {
 
 	public static void main(String[] args) {
 
-		System.out.println("Bem vindo ao cliente do Apache Little");
-
-		Matcher matcher;
+		System.out.println("Bem vindo ao cliente do Apache Lite");
 
 		if (args.length == 0) {
-			System.out.println("Informe um endereço para conectar: ");
-			Scanner teclado = new Scanner(System.in);
-			matcher = pattern.matcher(teclado.nextLine());
+			options();
 		} else {
-			matcher = pattern.matcher(args[0]);
+			requisitar(args[0]);
 		}
-
+	}
+	
+	private static void requisitar(String url){
+		Matcher matcher =  pattern.matcher(url);
+		
 		if (!matcher.find()) {
 			System.out.println("Entrada incorreta, experimente algo como: 127.0.0.1:6500/index.html");
 			return;
 		}
-
 		// Conecta ao servidor
 		try {
 			Socket socket = new Socket(matcher.group(1), Integer.parseInt(matcher.group(2)));
@@ -51,6 +50,18 @@ public class ClientAL {
 		} catch (IOException e) {
 			System.out.println("Não foi possível realizar operação ao servidor especificado");
 		}
-
 	}
+	
+	private static void options(){
+		Scanner teclado = new Scanner(System.in);
+		String option = "";
+		do {
+			System.out.println("\n\n Para sair digite '0' (zero) .................................\n");
+			System.out.println("Informe um endereço para conectar: \n");
+			option = teclado.nextLine();
+			if(option.equals("0")) break;
+			requisitar(option);
+		} while (true);
+	}
+	
 }
