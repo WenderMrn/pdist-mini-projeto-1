@@ -1,4 +1,4 @@
-# ApacheLittle
+# ApacheLite
 
 Este repositório contém código fonte do mini projeto I da disciplina de Sistemas Distribuídos do IFPB.
 
