@@ -2,6 +2,7 @@ package br.edu.ifpb;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -33,7 +34,7 @@ public class ApacheLite extends Thread{
 			ss = new ServerSocket(port);
 			ExecutorService pool = Executors.newFixedThreadPool(poolSize);
 			
-			for (int i = 0; i < poolSize; i++) {
+			for (int i = 1; i <= poolSize; i++) {
 				pool.execute(new ApacheLite(ss,i));
 			}
 			
@@ -47,7 +48,7 @@ public class ApacheLite extends Thread{
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub
-		System.out.println("Thread Starting number - "+this.number);
+		System.out.println("Thread starting number - "+this.number);
 		try {
 			while(true){
 				Socket socket = serverSocket.accept();
@@ -57,7 +58,7 @@ public class ApacheLite extends Thread{
 				String data = dataInput.readUTF();
 				dataOutput.writeUTF(this.finder(data));
 				socket.close();
-				System.out.println("Request intercepted by number thread - "+this.number);
+				System.out.println("client adresss "+socket.getInetAddress()+" - request intercepted by number thread - "+this.number);
 			}
 		} catch (Exception e) {
 			// TODO: handle exception
@@ -84,12 +85,23 @@ public class ApacheLite extends Thread{
 		String response = "";
 	
 		try {
-			byte[] file = Files.readAllBytes(Paths.get("./public/"+name));
-			response += this.toHttpFormat(new String(file),"text/html",200,"Ok");
+			String path = "./public/"+name;
+			String extension = getFileExtension(path).equals("txt")?"text/plain":"text/html";
+			
+			byte[] bytes = Files.readAllBytes(Paths.get(path));
+			response += this.toHttpFormat(new String(bytes),extension,200,"Ok");
 		} catch (IOException e) {
 			response = this.toHttpFormat("","text/plain",404,"Not Found");
 		}
 		
 		return response;
-	} 
+	}
+	
+	private static String getFileExtension(String fileName){
+		String extension = "";
+		if(fileName.lastIndexOf(".") != -1 && fileName.lastIndexOf(".") != 0){
+			extension = fileName.substring(fileName.lastIndexOf(".")+1);
+		} 
+		return extension;
+	}
 }
