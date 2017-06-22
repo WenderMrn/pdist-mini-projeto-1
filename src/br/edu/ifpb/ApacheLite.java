@@ -17,6 +17,7 @@ public class ApacheLite extends Thread{
 	private static ServerSocket serverSocket = null;
 	private static int port = 5600;
 	private int number = 0;
+	private static int poolSize = 100;   
 	
 	public ApacheLite(ServerSocket ss,int n){
 		serverSocket = ss;
@@ -30,9 +31,9 @@ public class ApacheLite extends Thread{
 		try {
 			
 			ss = new ServerSocket(port);
-			ExecutorService pool = Executors.newFixedThreadPool(10);
+			ExecutorService pool = Executors.newFixedThreadPool(poolSize);
 			
-			for (int i = 0; i < 10; i++) {
+			for (int i = 0; i < poolSize; i++) {
 				pool.execute(new ApacheLite(ss,i));
 			}
 			
