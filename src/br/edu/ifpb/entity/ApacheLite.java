@@ -82,7 +82,7 @@ public class ApacheLite extends UnicastRemoteObject implements IApacheManager, I
 			response += "\n200 ok\n\n"+FileHelper.readFileContent(name);
 		}else{
 			// not found 400
-			response += "\n400 not faund - Arquivo não encontrado.";	
+			response += "\n400 not found - Arquivo não encontrado.";	
 		}
 		
 		return response;
@@ -174,13 +174,7 @@ public class ApacheLite extends UnicastRemoteObject implements IApacheManager, I
 		
 		if(manager == null || !isLogged(manager.getLogin())) throw new ApacheLiteException("Você não está logado!");
 		
-		IManagerRemote mr = findLoggedManagerByLogin(manager.getLogin());
-		
-		if(mr!=null) return false;
-		
-		this.loggedManagers.remove(manager);
-		
-		return true;
+		return this.loggedManagers.remove(manager);
 		
 	}
 

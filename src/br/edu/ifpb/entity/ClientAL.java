@@ -29,8 +29,11 @@ public class ClientAL {
 				System.out.println(" Informe o nome do arquivo: ");
 				
 				arquivo = teclado.nextLine();
-		
-				System.out.println(servidor.searchFile(arquivo));
+				
+				if (!arquivo.equals("0")) {
+					System.out.println(servidor.searchFile(arquivo));					
+				}
+
 				
 			}while(!arquivo.equals("0"));
 		

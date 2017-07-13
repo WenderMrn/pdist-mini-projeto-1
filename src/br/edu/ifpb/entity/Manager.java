@@ -172,17 +172,20 @@ public class Manager extends UnicastRemoteObject implements IManagerRemote{
 				case "0":
 					try {
 						servidor.logout(studManager);
+						studManager = null;
+						servidor = null;
 					} catch (ApacheLiteException e) {
-						// TODO Auto-generated catch block
+						System.out.println(e);
 					};
 					System.out.println("finalizando Manager!");
-					return;
+					break;
+
 				default:
 					System.out.println("\nOpção inválida!");
 					break;
 				}
-				
-			}while(true);	
+
+			}while(!option.equals("0"));	
 			
 			
 		} catch (MalformedURLException e) {
