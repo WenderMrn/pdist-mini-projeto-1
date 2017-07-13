@@ -93,7 +93,7 @@ public class Manager extends UnicastRemoteObject implements IManagerRemote{
 							
 						}catch (ApacheLiteException e) {
 							// TODO Auto-generated catch block
-							System.out.println();
+							System.out.println(e);
 						}
 					}
 				break;
@@ -195,6 +195,9 @@ public class Manager extends UnicastRemoteObject implements IManagerRemote{
 		} catch (NotBoundException e) {
 			e.printStackTrace();
 		}
+
+
+		System.exit(0);
 	}
 
 }
