@@ -1,12 +1,8 @@
 package br.edu.ifpb;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.ServerSocket;
-import java.net.Socket;
 import java.nio.channels.AlreadyBoundException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -17,8 +13,6 @@ import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.GregorianCalendar;
 import java.util.Locale;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 public class ApacheLite extends UnicastRemoteObject implements IApacheManager, IApacheClient{
 	
@@ -127,6 +121,12 @@ public class ApacheLite extends UnicastRemoteObject implements IApacheManager, I
 
 	@Override
 	public void notifyAll(String message) throws RemoteException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void logout() throws RemoteException {
 		// TODO Auto-generated method stub
 		
 	}

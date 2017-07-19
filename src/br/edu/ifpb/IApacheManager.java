@@ -9,5 +9,6 @@ public interface IApacheManager extends Remote{
 	public boolean deleteFile(String name) throws RemoteException;
 	public boolean createManager(String login,String senha) throws RemoteException;
 	public void login(String login,String senha) throws RemoteException;
+	public void logout() throws RemoteException;
 	public void notifyAll(String message) throws RemoteException;
 }
