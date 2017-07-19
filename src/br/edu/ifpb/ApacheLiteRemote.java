@@ -9,4 +9,8 @@ public interface ApacheLiteRemote extends Remote {
 	public boolean removeFile(String name) throws RemoteException;
 
 	public String readFile(String name) throws RemoteException;
+	
+	public boolean doLogin(String user, String password)  throws RemoteException;
+
+	public void doCallback(ClientALRemote client)  throws RemoteException;
 }

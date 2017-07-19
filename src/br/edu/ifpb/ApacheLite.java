@@ -13,9 +13,13 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class ApacheLite extends UnicastRemoteObject implements ApacheLiteRemote {
-
+	private HashMap<String, String> managers;
+	private ArrayList<ClientALRemote> clients;
+	
 	public static void main(String[] args) {
 		try {
 			LocateRegistry.createRegistry(Registry.REGISTRY_PORT);
@@ -33,6 +37,9 @@ public class ApacheLite extends UnicastRemoteObject implements ApacheLiteRemote 
 	}
 
 	protected ApacheLite() throws RemoteException {
+		this.managers = new HashMap<String, String>();
+		this.clients = new ArrayList<ClientALRemote>();
+		this.managers.put("mari", "123");
 	}
 
 	@Override
@@ -95,4 +102,22 @@ public class ApacheLite extends UnicastRemoteObject implements ApacheLiteRemote 
 		return saida;
 	}
 
+	@Override
+	public boolean doLogin(String user, String password)  throws RemoteException {
+		if (this.managers.get(user) == null &&
+				(this.managers.get(user) != password)) {
+			return false;
+		}
+
+		return true;
+	}
+
+	@Override
+	public void doCallback(ClientALRemote client)  throws RemoteException {
+		this.clients.add(client);
+		
+		for (ClientALRemote c : this.clients) {
+			c.alert("Mudou algo em..");
+		}
+	}
 }
