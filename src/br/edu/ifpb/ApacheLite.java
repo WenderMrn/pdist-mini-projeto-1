@@ -101,8 +101,15 @@ public class ApacheLite extends UnicastRemoteObject implements IApacheManager, I
 	}
 
 	@Override
-	public boolean deleteFile(String file) throws RemoteException {
+	public boolean deleteFile(String name) throws RemoteException {
 		// TODO Auto-generated method stub
+		File file = readFile(name);
+
+		if(file!=null){
+			file.delete();
+			return true;
+		}
+		
 		return false;
 	}
 

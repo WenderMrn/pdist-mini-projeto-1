@@ -21,7 +21,7 @@ public class ClientAL {
 		try {
 			
 			IApacheClient servidor = (IApacheClient) Naming.lookup("rmi://localhost/ApacheLiteRMI");
-			System.out.println(servidor.searchFile("doc.txt"));
+			System.out.println(servidor.searchFile("dc.txt"));
 			
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
