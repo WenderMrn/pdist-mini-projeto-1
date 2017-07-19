@@ -1,107 +1,98 @@
 package br.edu.ifpb;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.ServerSocket;
-import java.net.Socket;
+import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.GregorianCalendar;
-import java.util.Locale;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.rmi.AlreadyBoundException;
+import java.rmi.Naming;
+import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
+import java.rmi.server.UnicastRemoteObject;
 
-public class ApacheLite extends Thread{
-	
-	private static ServerSocket serverSocket = null;
-	private static int port = 5600;
-	private static int poolSize = 100; 
-	private int number = 0;  
-	
-	public ApacheLite(ServerSocket ss,int n){
-		serverSocket = ss;
-		this.number = n;
-	}
-	
+public class ApacheLite extends UnicastRemoteObject implements ApacheLiteRemote {
+
 	public static void main(String[] args) {
-		System.out.println("ApacheLite - Executing\n\n");
-		ServerSocket ss = null;
-		
 		try {
-			
-			ss = new ServerSocket(port);
-			ExecutorService pool = Executors.newFixedThreadPool(poolSize);
-			
-			for (int i = 1; i <= poolSize; i++) {
-				pool.execute(new ApacheLite(ss,i));
-			}
-			
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			LocateRegistry.createRegistry(Registry.REGISTRY_PORT);
+			ApacheLite servidor = new ApacheLite();
+			Naming.bind("servidor", servidor);
+			System.out.println("ApacheLite RMI Inicializado..");
+
+		} catch (RemoteException e) {
+			e.printStackTrace();
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (AlreadyBoundException e) {
 			e.printStackTrace();
 		}
-		
 	}
-	
+
+	protected ApacheLite() throws RemoteException {
+	}
+
 	@Override
-	public void run() {
-		// TODO Auto-generated method stub
-		System.out.println("Thread starting number - "+this.number);
-		try {
-			while(true){
-				Socket socket = serverSocket.accept();
-				DataInputStream dataInput = new DataInputStream(socket.getInputStream());
-				DataOutputStream dataOutput = new DataOutputStream(socket.getOutputStream());
-				
-				String data = dataInput.readUTF();
-				dataOutput.writeUTF(this.finder(data));
-				socket.close();
-				System.out.println("client adresss "+socket.getInetAddress()+" - request intercepted by number thread - "+this.number);
+	public boolean createFile(String name, String content) throws RemoteException {
+		File file = new File(String.format("./public/%s", name));
+
+		if (!file.exists()) {
+			try {
+				file.createNewFile();
+			} catch (IOException e) {
+				e.printStackTrace();
+				return false;
 			}
-		} catch (Exception e) {
-			// TODO: handle exception
-			e.printStackTrace();
 		}
-	}
-	
-	private String toHttpFormat(String content,String contenttype,
-			int statusCode, String statusMessage){
-		String formatedMessage 
-					= "HTTP/1.1 "+statusCode+" "+statusMessage+"\n"
-					+"Server: ApacheLite/1.0\n"
-					+"Date: "+GregorianCalendar.getInstance(new Locale("pt","BR")).getTime()+"\n"
-					+"Content-Type: "+contenttype+"\n"
-					+"Last-Modified: Mon, 11 Jan 1998 13:23:42 GMT\n"
-					+"Content-Length: "+content.length()+"\n"
-					+"Connection: Closed\n\n"
-					+ content;
-		return formatedMessage;
-	}
-	
-	private String finder(String name){
-		
-		String response = "";
-	
+
 		try {
-			String path = "./public/"+name;
-			String extension = getFileExtension(path).equals("txt")?"text/plain":"text/html";
-			
-			byte[] bytes = Files.readAllBytes(Paths.get(path));
-			response += this.toHttpFormat(new String(bytes),extension,200,"Ok");
+			FileOutputStream cursor = new FileOutputStream(String.format("./public/%s", name), false);
+			cursor.write(content.getBytes());
+			cursor.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+			return false;
 		} catch (IOException e) {
-			response = this.toHttpFormat("","text/plain",404,"Not Found");
+			e.printStackTrace();
+			return false;
 		}
-		
-		return response;
+
+		return true;
 	}
-	
-	private static String getFileExtension(String fileName){
-		String extension = "";
-		if(fileName.lastIndexOf(".") != -1 && fileName.lastIndexOf(".") != 0){
-			extension = fileName.substring(fileName.lastIndexOf(".")+1);
-		} 
-		return extension;
+
+	@Override
+	public boolean removeFile(String name) throws RemoteException {
+		File file = new File(String.format("./public/%s", name));
+
+		if (!file.exists()) {
+			return false;
+		}
+
+		file.delete();
+
+		return true;
 	}
+
+	@Override
+	public String readFile(String name) throws RemoteException {
+		File file = new File(String.format("./public/%s", name));
+		String saida = "200 - File found\nServer: ApacheLite/2.0\nContent:\n";
+
+		if (!file.exists()) {
+			return "400 - File not found";
+		}
+
+		try {
+			saida += new String(Files.readAllBytes(Paths.get(String.format("./public/%s", name))));
+		} catch (IOException e) {
+			e.printStackTrace();
+			return "400 - Something is going wrong";
+		}
+
+		return saida;
+	}
+
 }
