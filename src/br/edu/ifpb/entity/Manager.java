@@ -26,9 +26,9 @@ public class Manager extends UnicastRemoteObject implements IManagerRemote{
 	};
 	
 	@Override
-	public Object notify(Message message) {
+	public void notify(String message) {
 		// TODO Auto-generated method stub
-		return message.get();
+		System.out.println(message);
 	}
 
 	@Override
