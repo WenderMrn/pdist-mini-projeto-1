@@ -81,13 +81,20 @@ public class Manager extends UnicastRemoteObject implements IManagerRemote{
 						
 						System.out.println("\nInforma a senha: ");
 						password = teclado.nextLine();
-						
-						studManager = servidor.login(new Manager(login,password));
-						
-						if(studManager != null){
-							System.out.println("Logado com sucesso");
-						}else{
+						try {
+							if(servidor.authentication(login,password)){
+								studManager = servidor.login(new Manager(login,password));
+								if(studManager != null){
+									System.out.println("Logado com sucesso");
+									break;
+								}
+							}
+							
 							System.out.println("Usuário e/ou senhas inválido(s)!");
+							
+						}catch (ApacheLiteException e) {
+							// TODO Auto-generated catch block
+							System.out.println();
 						}
 					}
 				break;
