@@ -32,14 +32,12 @@ public class ApacheLite extends UnicastRemoteObject implements IApacheManager, I
 	public static void main(String[] args){
 		try {
 			
-			LocateRegistry.createRegistry(Registry.REGISTRY_PORT);
+			Registry registry = LocateRegistry.createRegistry(1078);
 			ApacheLite servidor = new ApacheLite();
-			Naming.bind("rmi://localhost/ApacheLiteRMI", servidor);
+			registry.bind("ApacheLiteRMI", servidor);
 			System.out.println("ApacheLite RMI Inicializado..");
 		
 		} catch (RemoteException e) {
-			e.printStackTrace();
-		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		} catch (AlreadyBoundException e) {
 			e.printStackTrace();
@@ -114,8 +112,14 @@ public class ApacheLite extends UnicastRemoteObject implements IApacheManager, I
 	}
 
 	@Override
-	public boolean createManager(String login, String senha,IManagerRemote manager) throws RemoteException {
+	public boolean createManager(String login, String password,IManagerRemote manager) throws RemoteException,ApacheLiteException {
 		// TODO Auto-generated method stub
+		if(manager == null || !isLogged(manager.getLogin())) throw new ApacheLiteException(acessoNegado); 
+		
+		if(this.managers.get(login)==null){
+			this.managers.put(login, password);
+			return true;
+		}
 		return false;
 	}
 

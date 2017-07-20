@@ -20,7 +20,7 @@ public class ClientAL {
 		
 		try {
 			
-			IApacheClient servidor = (IApacheClient) Naming.lookup("rmi://localhost/ApacheLiteRMI");
+			IApacheClient servidor = (IApacheClient) Naming.lookup("rmi://localhost:1078/ApacheLiteRMI");
 			
 			do{
 				System.out.println("\n\n---------------------------------------------");

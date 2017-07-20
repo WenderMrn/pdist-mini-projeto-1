@@ -10,7 +10,7 @@ public interface IApacheManager extends Remote{
 	public boolean createFile(String name, String content,IManagerRemote manager) throws RemoteException,ApacheLiteException;
 	public boolean deleteFile(String name, IManagerRemote manager) throws RemoteException,ApacheLiteException;
 	public boolean createManager(String login,String password, IManagerRemote manager) throws RemoteException,ApacheLiteException;
-	public IManagerRemote login(String login,String senha) throws RemoteException;
+	public IManagerRemote login(String login,String password) throws RemoteException;
 	public boolean isLogged(String login) throws RemoteException;
 	public boolean isLogged(IManagerRemote manager) throws RemoteException;
 	public boolean logout(IManagerRemote manager) throws RemoteException, ApacheLiteException;

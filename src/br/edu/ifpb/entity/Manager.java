@@ -49,7 +49,7 @@ public class Manager extends UnicastRemoteObject implements IManagerRemote{
 		
 		try {
 			
-			IApacheManager servidor = (IApacheManager) Naming.lookup("rmi://localhost/ApacheLiteRMI");
+			IApacheManager servidor = (IApacheManager) Naming.lookup("rmi://localhost:1078/ApacheLiteRMI");
 			System.out.println("Bem vindo ao cliente do Apache Lite RMI\n");
 			
 			do{
@@ -141,25 +141,26 @@ public class Manager extends UnicastRemoteObject implements IManagerRemote{
 					}
 				break;
 				case "6":
-					if(servidor.isLogged(studManager)){
-						System.out.println("Você já esta logado!");
-						break;
-					}else{
-						System.out.println("Novo Manager1\n\n");
+					
+						System.out.println("Novo Manager\n");
 						System.out.println("\nInforma o login: ");
 						login = teclado.nextLine();
 						
 						System.out.println("\nInforma a senha: ");
 						password = teclado.nextLine();
 						
-						studManager = servidor.login(login, password);
 						
-						if(studManager != null){
-							System.out.println("Logado com sucesso");
+					try {
+						if(servidor.createManager(login, password,studManager)){
+							System.out.println("Novo Manager criado com sucesso!");
 						}else{
-							System.out.println("Usuário e/ou senhas inválido(s)!");
+							System.out.println("Erro: login já existente.");
 						}
+					} catch (ApacheLiteException e1) {
+						// TODO Auto-generated catch block
+						System.out.println(e1.getMessage());
 					}
+					
 				break;
 				case "0":
 					try {
