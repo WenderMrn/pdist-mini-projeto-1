@@ -1,4 +1,4 @@
-package br.edu.ifpb;
+package br.edu.ifpb.interfaces;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
