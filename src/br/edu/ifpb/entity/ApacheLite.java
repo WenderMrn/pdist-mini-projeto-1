@@ -87,8 +87,10 @@ public class ApacheLite extends UnicastRemoteObject implements IApacheManager, I
 		if(FileHelper.createFile(name, content)){
 			//notify
 			for (IManagerRemote iManagerRemote : loggedManagers) {
-			if(!manager.getLogin().equals(iManagerRemote.getLogin()))
-				iManagerRemote.notify("O usuário "+manager.getLogin()+" deletou o arquivo "+name+"!");
+				System.out.println("A: "+iManagerRemote.getLogin());
+				System.out.println("B: "+manager.getLogin());
+				if(!iManagerRemote.getLogin().equals(manager.getLogin()))
+					iManagerRemote.notify("O usuário "+manager.getLogin()+" criou o arquivo "+name+"!");
 			}
 			return true;
 		}
@@ -103,7 +105,9 @@ public class ApacheLite extends UnicastRemoteObject implements IApacheManager, I
 		if(FileHelper.deleteFile(name)){
 			//notify
 			for (IManagerRemote iManagerRemote : loggedManagers) {
-				if(!manager.getLogin().equals(iManagerRemote.getLogin()))
+				System.out.println("A: "+iManagerRemote.getLogin());
+				System.out.println("B: "+manager.getLogin());
+				if(!iManagerRemote.getLogin().equals(manager.getLogin()))
 					iManagerRemote.notify("O usuário "+manager.getLogin()+" deletou o arquivo "+name+"!");
 			}
 			return true;
@@ -124,20 +128,20 @@ public class ApacheLite extends UnicastRemoteObject implements IApacheManager, I
 	}
 
 	@Override
-	public IManagerRemote login(String login, String password) throws RemoteException {
+	public IManagerRemote login(IManagerRemote manager) throws RemoteException {
 		// TODO Auto-generated method stub
 		
-		IManagerRemote manager = null; 
+		IManagerRemote mr = null; 
 		
-		if(this.managers.get(login)!=null && this.managers.get(login).equals(password)){
+		if(manager == null || this.managers.get(manager.getLogin())==null) return mr;
+		
+		if(this.managers.get(manager.getLogin()).equals(manager.getPassword())){
 			
-			manager = new Manager(login,password);
-			
-			if(!isLogged(login)){
-				System.out.println(this.loggedManagers.size());
+			if(!isLogged(manager.getLogin())){
 				this.loggedManagers.add(manager);
+				System.out.println(this.loggedManagers.size());
 			}else{
-				return findLoggedManagerByLogin(login);
+				return findLoggedManagerByLogin(manager.getLogin());
 			}
 		}
 		return manager;

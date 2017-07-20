@@ -22,7 +22,7 @@ public class Manager extends UnicastRemoteObject implements IManagerRemote{
 	
 	public Manager(String login,String password)throws RemoteException{
 		this.login = login;
-		this.login = password;
+		this.password = password;
 	};
 	
 	@Override
@@ -82,7 +82,7 @@ public class Manager extends UnicastRemoteObject implements IManagerRemote{
 						System.out.println("\nInforma a senha: ");
 						password = teclado.nextLine();
 						
-						studManager = servidor.login(login, password);
+						studManager = servidor.login(new Manager(login,password));
 						
 						if(studManager != null){
 							System.out.println("Logado com sucesso");
