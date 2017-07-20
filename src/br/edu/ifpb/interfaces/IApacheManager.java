@@ -14,5 +14,4 @@ public interface IApacheManager extends Remote{
 	public boolean isLogged(IManagerRemote manager) throws RemoteException;
 	public boolean logout(IManagerRemote manager) throws RemoteException, ApacheLiteException;
 	public IManagerRemote login(IManagerRemote manager) throws RemoteException, ApacheLiteException;
-	public boolean authentication(String login, String password) throws RemoteException;
 }

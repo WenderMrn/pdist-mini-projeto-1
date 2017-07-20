@@ -126,29 +126,24 @@ public class ApacheLite extends UnicastRemoteObject implements IApacheManager, I
 		}
 		return false;
 	}
-
-	@Override
-	public boolean authentication(String login,String password) throws RemoteException {
-		// TODO Auto-generated method stub	
-		if(this.managers.get(login).equals(password)){
-			return true;
-		}
-		return false;
-	}
 	
 	@Override
 	public IManagerRemote login(IManagerRemote manager) throws RemoteException{
 		// TODO Auto-generated method stub
+		IManagerRemote mr = null;
 		
-		if(manager == null ) return manager;
+		if(manager == null ) return mr;
 		
-		if(!isLogged(manager.getLogin())){
-			this.loggedManagers.add(manager);
-			System.out.println(this.loggedManagers.size());
-			return manager;
-		}else{
-			return findLoggedManagerByLogin(manager.getLogin());
+		if(this.managers.get(manager.getLogin()).equals(manager.getPassword())){
+			if(!isLogged(manager.getLogin())){
+				this.loggedManagers.add(manager);
+				System.out.println(this.loggedManagers.size());
+				mr = manager;
+			}else{
+				mr = findLoggedManagerByLogin(manager.getLogin());
+			}
 		}
+		return mr;
 	}
 
 	
