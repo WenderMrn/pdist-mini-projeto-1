@@ -87,8 +87,8 @@ public class ApacheLite extends UnicastRemoteObject implements IApacheManager, I
 		if(FileHelper.createFile(name, content)){
 			//notify
 			for (IManagerRemote iManagerRemote : loggedManagers) {
-				if(!manager.equals(manager))
-					iManagerRemote.notify("O usuário "+manager.getLogin()+" criou o arquivo "+name+" !");
+				//if(!manager.equals(iManagerRemote))
+				System.out.println(iManagerRemote.notify(new Message("O usuário "+manager.getLogin()+" deletou o arquivo "+name+"!")));
 			}
 			return true;
 		}
@@ -103,8 +103,8 @@ public class ApacheLite extends UnicastRemoteObject implements IApacheManager, I
 		if(FileHelper.deleteFile(name)){
 			//notify
 			for (IManagerRemote iManagerRemote : loggedManagers) {
-				if(!manager.equals(manager))
-					iManagerRemote.notify("O usuário "+manager.getLogin()+" deletou o arquivo "+name+"!");
+				//if(!manager.equals(iManagerRemote))
+					System.out.println(iManagerRemote.notify(new Message("O usuário "+manager.getLogin()+" deletou o arquivo "+name+"!")));
 			}
 			return true;
 		}
@@ -134,6 +134,7 @@ public class ApacheLite extends UnicastRemoteObject implements IApacheManager, I
 			manager = new Manager(login,password);
 			
 			if(!isLogged(login)){
+				System.out.println(this.loggedManagers.size());
 				this.loggedManagers.add(manager);
 			}else{
 				return findLoggedManagerByLogin(login);

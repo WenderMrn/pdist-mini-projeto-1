@@ -22,12 +22,13 @@ public class Manager extends UnicastRemoteObject implements IManagerRemote{
 	
 	public Manager(String login,String password)throws RemoteException{
 		this.login = login;
+		this.login = password;
 	};
 	
 	@Override
-	public void notify(String message) {
+	public Object notify(Message message) {
 		// TODO Auto-generated method stub
-		System.out.println("Notificação: "+message);
+		return message.get();
 	}
 
 	@Override
@@ -71,7 +72,7 @@ public class Manager extends UnicastRemoteObject implements IManagerRemote{
 				switch (option) {
 				case "1":
 					if(servidor.isLogged(studManager)){
-						System.out.println("Você já esta logado!");
+						System.out.println("Você já esta logado com: "+studManager.getLogin());
 						break;
 					}else{
 						
