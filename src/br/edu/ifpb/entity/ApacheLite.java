@@ -8,7 +8,9 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 
 import br.edu.ifpb.interfaces.IApacheClient;
 import br.edu.ifpb.interfaces.IApacheManager;
@@ -21,12 +23,12 @@ public class ApacheLite extends UnicastRemoteObject implements IApacheManager, I
 	private static final long serialVersionUID = 1L;
 	private static int port = 1078;
 	private HashMap<String, String> managers;
-	private ArrayList<IManagerRemote> loggedManagers;
+	private List<IManagerRemote> loggedManagers;
 	private static String acessoNegado = "\nAcesso negado! Faça login.\n";
 	
 	public ApacheLite()throws RemoteException{
 		this.managers = new HashMap<String, String>();
-		this.loggedManagers = new ArrayList<IManagerRemote>();
+		this.loggedManagers = Collections.synchronizedList(new ArrayList<IManagerRemote>());
 		this.managers.put("mari", "123");
 	};
 	
